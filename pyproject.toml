@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "daily-digest"
+version = "0.1.0"
+description = "Send a daily digest to a list of email address recepients"
+authors = ["josfam <josephamukun@tutanota.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+pre-commit = "^3.3.3"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
