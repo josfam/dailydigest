@@ -1,6 +1,13 @@
 import sqlite3
 import random
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+import requests
+import json
+from datetime import datetime as dt
+
+load_dotenv()
 
 
 def get_random_quote(quotes_db='quotes.db'):
@@ -23,8 +30,31 @@ def get_random_quote(quotes_db='quotes.db'):
         return f'"{quote}"\n— {author}'
 
 
-def get_weather_forecast():
-    pass
+def get_weather_forecast(coords={'lat': 0.045, 'long': 32.447}):
+    # Load an API key from a .env file
+    API_KEY = os.getenv('OPEN_WEATHER_API_KEY')
+
+    lat, long = coords['lat'], coords['long']
+    params = f"lat={lat}&lon={long}&appid={API_KEY}&units=metric"
+    url = f'https://api.openweathermap.org/data/2.5/forecast?{params}'
+
+    try:
+        response = requests.get(url)
+        data = json.loads(response.text)
+        forecast = {'city': data['city']['name'], 'country': data['city']['country'], 'forecasts': []}
+    except Exception as e:
+        print(e)
+    else:
+        for period in data['list'][0:9]:  # only interested in the one-day-ahead forecasts
+            three_hr_forecast = {
+                'timestamp': period['dt'],
+                'temp': period['main']['temp'],
+                'description': period['weather'][0]['description'].title(),
+                'icon': f"https://openweathermap.org/img/wn/{period['weather'][0]['icon']}.png",
+            }
+            forecast['forecasts'].append(three_hr_forecast)
+
+        return forecast
 
 
 def get_twitter_trends():
