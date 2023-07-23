@@ -6,6 +6,7 @@ import os
 import requests
 import json
 from datetime import datetime as dt
+from typing import Optional
 
 load_dotenv()
 
@@ -30,7 +31,16 @@ def get_random_quote(quotes_db='quotes.db'):
         return f'"{quote}"\n— {author}'
 
 
-def get_weather_forecast(coords={'lat': 0.045, 'long': 32.447}):
+def get_weather_forecast(coords: dict = {'lat': 0.045, 'long': 32.447}) -> Optional[dict]:
+    """Gets a 24-hour weather forecast for the location with the provided coordinates,
+    by making API requests to `openweathermap`.
+
+    Args:
+        coords: The coordinates dictionary, with 'lat' and 'long' keys, that represents
+        the location whose weather forecast to retrieve.
+    Returns:
+        A dictionary of various weather forecast data for the given location.
+    """
     # Load an API key from a .env file
     API_KEY = os.getenv('OPEN_WEATHER_API_KEY')
 
@@ -55,6 +65,7 @@ def get_weather_forecast(coords={'lat': 0.045, 'long': 32.447}):
             forecast['forecasts'].append(three_hr_forecast)
 
         return forecast
+    return None
 
 
 def get_twitter_trends():
